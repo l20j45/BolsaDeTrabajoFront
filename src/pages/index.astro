@@ -1,0 +1,20 @@
+---
+import Layout from '../layouts/Layout.astro';
+---
+
+<Layout>
+	<div class="container">
+	  <header class="d-flex justify-content-center py-3">
+		<ul class="nav nav-pills">
+		  {
+			['Home', 'Features', 'Pricing', 'FAQs', 'About'].map((n, i) => (
+			  <li class="nav-item">
+				<a href="#" class:list={['nav-link']}>{n}</a>
+			  </li>
+			))
+		  }
+		</ul>
+	  </header>
+
+	</div>
+  </Layout>
