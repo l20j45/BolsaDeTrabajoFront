@@ -1,5 +1,7 @@
 ---
 import "../styles/bootstrap.scss";
+import NavBarNormal from "../components/navBarNormalComponent.astro";
+import Footer from "../components/footerComponent.astro";
 ---
 
 <!doctype html>
@@ -12,10 +14,31 @@ import "../styles/bootstrap.scss";
     <title>Bootstrap with Astro</title>
     <meta name="description" content="Use Bootstrap with Astro" />
   </head>
-  <body>
-    <slot />
+  <body class="wrapper  bg-black">
+    <NavBarNormal />
+    <div class="container content  bg-black"><slot /></div>
+    <Footer/>
     <script>
       import "bootstrap/dist/js/bootstrap";
     </script>
   </body>
 </html>
+
+<style>
+  body,
+  html {
+    height: 100%; /* Para asegurar que ocupe todo el alto de la ventana */
+  }
+
+  .wrapper {
+    min-height: 100vh; /* Altura mínima para ocupar todo el viewport */
+    display: flex;
+    flex-direction: column; /* Ordenar en columna */
+  }
+
+  .content {
+    flex: 1; /* Hacer que la sección principal ocupe el espacio disponible */
+    height: 100%;
+    
+  }
+</style>

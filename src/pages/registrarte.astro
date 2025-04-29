@@ -1,0 +1,282 @@
+---
+import Layout from "../layouts/Layout.astro";
+import { Image } from "astro:assets";
+import PrincipalImg from "../assets/images/Principal.png";
+---
+
+<Layout>
+	<section class="gradient-custom">
+		<div class="container py-5 h-100">
+			<div class="row justify-content-center align-items-center h-100">
+				<div class="col-12 col-lg-9 col-xl-7">
+					<div
+						class="card shadow-2-strong card-registration"
+						style="border-radius: 15px;"
+					>
+						<div class="card-body p-4 p-md-5">
+							<h3 class="mb-4 pb-2 pb-md-0 mb-md-5">
+								Formulario de registro
+							</h3>
+							<div id="alertContainer"></div>
+							<form id="userForm">
+								<div class="row">
+									<div class="col-md-6 mb-4">
+										<div
+											data-mdb-input-init
+											class="form-outline"
+										>
+											<input
+												type="email"
+												id="correo"
+												class="form-control form-control-lg"
+												required
+											/>
+											<label
+												class="form-label"
+												for="correo">Correo</label
+											>
+										</div>
+									</div>
+									<div class="col-md-6 mb-4">
+										<div
+											data-mdb-input-init
+											class="form-outline"
+										>
+											<input
+												type="text"
+												id="nombre"
+												class="form-control form-control-lg"
+												required
+											/>
+											<label
+												class="form-label"
+												for="nombre">Nombre</label
+											>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6 mb-4">
+										<div
+											data-mdb-input-init=""
+											class="form-outline"
+										>
+											<input
+												type="text"
+												id="apellidoPaterno"
+												class="form-control form-control-lg"
+												required
+											/>
+											<label
+												class="form-label"
+												for="apellidoPaterno"
+												>Apellido Paterno</label
+											>
+										</div>
+									</div>
+									<div class="col-md-6 mb-4">
+										<div
+											data-mdb-input-init=""
+											class="form-outline"
+										>
+											<input
+												type="text"
+												id="apellidoMaterno"
+												class="form-control form-control-lg"
+												required
+											/>
+											<label
+												class="form-label"
+												for="apellidoMaterno"
+												>Apellido Materno</label
+											>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6 mb-4">
+										<div
+											data-mdb-input-init=""
+											class="form-outline"
+										>
+											<input
+												type="text"
+												id="codigoAlumno"
+												class="form-control form-control-lg"
+												required
+											/>
+											<label
+												class="form-label"
+												for="codigoAlumno"
+												>Codigo Alumno</label
+											>
+										</div>
+									</div>
+									<div class="col-md-6 mb-4">
+										<div
+											data-mdb-input-init=""
+											class="form-outline"
+										>
+											<input
+												type="tel"
+												id="telefono"
+												class="form-control form-control-lg"
+												required
+											/>
+											<label
+												class="form-label"
+												for="telefono">Telefono</label
+											>
+										</div>
+									</div>
+								</div>
+								<div class="row">
+									<div class="col-md-6 mb-4">
+										<div
+											data-mdb-input-init=""
+											class="form-outline"
+										>
+											<input
+												type="password"
+												id="password"
+												class="form-control form-control-lg"
+												required
+											/>
+											<label
+												class="form-label"
+												for="password">Password</label
+											>
+										</div>
+									</div>
+									<div
+										class="col-md-6 mb-4 d-flex justify-content-center"
+									>
+										<div class="">
+											<button
+												data-mdb-ripple-init
+												class="btn btn-primary btn-lg"
+												type="submit"
+											>
+												Enviar
+											</button>
+										</div>
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</Layout>
+
+<script>
+	// Manejo del formulario
+	document.addEventListener("DOMContentLoaded", () => {
+		const form = document.getElementById("userForm");
+		const alertContainer = document.getElementById("alertContainer");
+
+		if (form) {
+			form.addEventListener("submit", async (e) => {
+				e.preventDefault();
+
+				try {
+					// Obtener todos los datos del formulario
+					const formData = {
+						correo: document.getElementById("correo").value,
+						nombre: document.getElementById("nombre").value,
+						apellidoPaterno:
+							document.getElementById("apellidoPaterno").value,
+						apellidoMaterno:
+							document.getElementById("apellidoMaterno").value,
+						codigoAlumno:
+							document.getElementById("codigoAlumno").value,
+						telefono: document.getElementById("telefono").value,
+						password: document.getElementById("password").value,
+					};
+
+					// Validar campos requeridos
+					for (const [key, value] of Object.entries(formData)) {
+						if (!value.trim()) {
+							mostrarAlerta(
+								"Por favor, complete todos los campos",
+								"danger",
+							);
+							return;
+						}
+					}
+
+					// Validar formato de correo electrónico
+					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+					if (!emailRegex.test(formData.correo)) {
+						mostrarAlerta(
+							"Por favor, introduzca un correo electrónico válido",
+							"danger",
+						);
+						return;
+					}
+
+					// Enviar los datos al servidor utilizando fetch con FormData en lugar de JSON
+					const formDataObj = new FormData();
+					for (const [key, value] of Object.entries(formData)) {
+						formDataObj.append(key, value);
+					}
+
+					const response = await fetch(
+						"http://localhost:82/bolsaDeTrabajoApi/Controllers/estudianteController.php",
+						{
+							method: "POST",
+							body: formDataObj, // Enviamos como FormData en lugar de JSON
+						},
+					);
+
+					// Procesar la respuesta
+					if (response.ok) {
+						const data = await response.json();
+						mostrarAlerta(
+							"Registro completado con éxito",
+							"success",
+						);
+						form.reset();
+					} else {
+						const errorData = await response.json();
+						mostrarAlerta(
+							`Error en el registro: ${errorData.message || "Intente nuevamente más tarde"}`,
+							"danger",
+						);
+					}
+				} catch (error) {
+					console.error("Error al enviar el formulario:", error);
+					mostrarAlerta(
+						"Error al procesar la solicitud. Por favor, intente nuevamente más tarde",
+						"danger",
+					);
+				}
+			});
+		}
+
+		// Función para mostrar alertas
+		function mostrarAlerta(mensaje, tipo) {
+			const alertElement = document.createElement("div");
+			alertElement.className = `alert alert-${tipo} alert-dismissible fade show`;
+			alertElement.role = "alert";
+			alertElement.innerHTML = `
+		  ${mensaje}
+		  <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
+		`;
+
+			// Limpiar alertas anteriores
+			alertContainer.innerHTML = "";
+			alertContainer.appendChild(alertElement);
+
+			// Desaparecer automáticamente después de 5 segundos
+			setTimeout(() => {
+				if (alertElement && alertElement.parentNode) {
+					const alertToRemove = new bootstrap.Alert(alertElement);
+					alertToRemove.close();
+				}
+			}, 5000);
+		}
+	});
+</script>
