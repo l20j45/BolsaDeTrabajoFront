@@ -1,132 +1,105 @@
 ---
 import LayoutEstudiante from "../layouts/LayoutEstudiante.astro";
-import { Image } from "astro:assets";
-import PrincipalImg from "../assets/images/Principal.png";
+import PerfilEstudiante from "../components/perfilEstudiante.astro";
 ---
 
-<LayoutEstudiante>
-	<section class="gradient-custom">
-		<div class="container py-5 h-100">
-			<div class="row justify-content-center align-items-center h-100">
-				<div class="col-12 col-lg-9 col-xl-7">
-					<div
-						class="card shadow-2-strong card-registration d-flex justify-content-center align-items-center"
-						style="border-radius: 15px;"
-					>
-						<h1>En construcción</h1>
-					</div>
-				</div>
-			</div>
-		</div>
-	</section>
-</LayoutEstudiante>
-
 <script>
-	// Manejo del formulario
-	document.addEventListener("DOMContentLoaded", () => {
-		const form = document.getElementById("userForm");
-		const alertContainer = document.getElementById("alertContainer");
+	// Script para cargar datos del estudiante automáticamente
+	document.addEventListener("DOMContentLoaded", async () => {
+		// Obtener el código del estudiante (puedes obtenerlo de una cookie, localStorage o parámetro URL)
+		// Por ejemplo, si lo tienes en localStorage:
+		const codigoAlumno = localStorage.getItem("codigoAlumno") || "123456"; // Valor por defecto o desde donde lo almacenes
 
-		if (form) {
-			form.addEventListener("submit", async (e) => {
-				e.preventDefault();
+		// URL de tu API
+		const apiUrl = `http://localhost:82/bolsaDeTrabajoApi/Controllers/estudianteController.php?idEstudiante=1005`;
 
-				try {
-					// Obtener todos los datos del formulario
-					const formData = {
-						correo: document.getElementById("correo").value,
-						nombre: document.getElementById("nombre").value,
-						apellidoPaterno:
-							document.getElementById("apellidoPaterno").value,
-						apellidoMaterno:
-							document.getElementById("apellidoMaterno").value,
-						codigoAlumno:
-							document.getElementById("codigoAlumno").value,
-						telefono: document.getElementById("telefono").value,
-						password: document.getElementById("password").value,
-					};
+		try {
+			// Realizar la petición GET
+			const response = await fetch(apiUrl, {
+				method: "GET",
+				headers: {
+					Accept: "application/json",
+				},
+			});
 
-					// Validar campos requeridos
-					for (const [key, value] of Object.entries(formData)) {
-						if (!value.trim()) {
-							mostrarAlerta(
-								"Por favor, complete todos los campos",
-								"danger",
-							);
-							return;
+			if (!response.ok) {
+				throw new Error(`Error en la petición: ${response.status}`);
+			}
+
+			// Convertir la respuesta a JSON
+			const data = await response.json();
+
+			// Verificar si la respuesta contiene los datos necesarios
+			if (data && data.message == "ok") {
+				const estudiante = data.data[0]; // Asumiendo que la respuesta tiene este formato
+
+				// Rellenar los campos en el perfil
+				document.querySelector(".about-text p").textContent =
+					estudiante.descripcion || "Sin descripción disponible";
+
+				// Actualizar los datos personales
+				const mediaElements = document.querySelectorAll(".media");
+
+				// Mapeo de elementos para facilitar la actualización
+				const camposAActualizar = [
+					{ label: "Codigo Alumno", valor: estudiante.codigoAlumno },
+					{ label: "Correo", valor: estudiante.correo },
+					{ label: "Telefono", valor: estudiante.telefono },
+					{ label: "Nombre", valor: estudiante.nombre },
+					{
+						label: "Apellidos",
+						valor: `${estudiante.apellidoPaterno} ${estudiante.apellidoMaterno}`,
+					},
+					{
+						label: "Curriculum",
+						valor: estudiante.curriculum || "No disponible",
+					},
+				];
+
+				// Iterar sobre los elementos media y actualizar los valores
+				mediaElements.forEach((media) => {
+					const labelElement = media.querySelector("label");
+					if (labelElement) {
+						const campo = camposAActualizar.find(
+							(c) => labelElement.textContent === c.label,
+						);
+						if (campo) {
+							const valorElement = media.querySelector("p");
+
+							valorElement.textContent = campo.valor;
+							if (valorElement) {
+							}
 						}
 					}
+				});
 
-					// Validar formato de correo electrónico
-					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-					if (!emailRegex.test(formData.correo)) {
-						mostrarAlerta(
-							"Por favor, introduzca un correo electrónico válido",
-							"danger",
-						);
-						return;
+				// Actualizar la imagen de perfil si está disponible
+				if (estudiante.imagenPerfil) {
+					const avatarImg =
+						document.querySelector(".about-avatar img");
+					if (avatarImg) {
+						avatarImg.src = estudiante.imagenPerfil;
+						avatarImg.alt = `${estudiante.nombre} ${estudiante.apellidoPaterno}`;
 					}
-
-					// Enviar los datos al servidor utilizando fetch con FormData en lugar de JSON
-					const formDataObj = new FormData();
-					for (const [key, value] of Object.entries(formData)) {
-						formDataObj.append(key, value);
-					}
-
-					const response = await fetch(
-						"http://localhost:82/bolsaDeTrabajoApi/Controllers/estudianteController.php",
-						{
-							method: "POST",
-							body: formDataObj, // Enviamos como FormData en lugar de JSON
-						},
-					);
-
-					// Procesar la respuesta
-					if (response.ok) {
-						const data = await response.json();
-						mostrarAlerta(
-							"Registro completado con éxito",
-							"success",
-						);
-						form.reset();
-					} else {
-						const errorData = await response.json();
-						mostrarAlerta(
-							`Error en el registro: ${errorData.message || "Intente nuevamente más tarde"}`,
-							"danger",
-						);
-					}
-				} catch (error) {
-					console.error("Error al enviar el formulario:", error);
-					mostrarAlerta(
-						"Error al procesar la solicitud. Por favor, intente nuevamente más tarde",
-						"danger",
-					);
 				}
-			});
-		}
 
-		// Función para mostrar alertas
-		function mostrarAlerta(mensaje, tipo) {
-			const alertElement = document.createElement("div");
-			alertElement.className = `alert alert-${tipo} alert-dismissible fade show`;
-			alertElement.role = "alert";
-			alertElement.innerHTML = `
-		  ${mensaje}
-		  <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
-		`;
-
-			// Limpiar alertas anteriores
-			alertContainer.innerHTML = "";
-			alertContainer.appendChild(alertElement);
-
-			// Desaparecer automáticamente después de 5 segundos
-			setTimeout(() => {
-				if (alertElement && alertElement.parentNode) {
-					const alertToRemove = new bootstrap.Alert(alertElement);
-					alertToRemove.close();
+				// Actualizar el título (puesto deseado)
+				document.querySelector(".about-text h6.lead").textContent =
+					estudiante.descripcion || "Sin Puesto deseado disponible";
+				if (puestoDeseado && estudiante.puestoDeseado) {
+					puestoDeseado.textContent = estudiante.puestoDeseado;
 				}
-			}, 5000);
+			} else {
+				console.error(
+					"Formato de respuesta incorrecto o error en la respuesta",
+					data,
+				);
+			}
+		} catch (error) {
+			console.error("Error al cargar los datos del estudiante:", error);
 		}
 	});
 </script>
+<LayoutEstudiante>
+	<PerfilEstudiante />
+</LayoutEstudiante>
