@@ -1,0 +1,132 @@
+---
+import LayoutEstudiante from "../layouts/LayoutEstudiante.astro";
+import { Image } from "astro:assets";
+import PrincipalImg from "../assets/images/Principal.png";
+---
+
+<LayoutEstudiante>
+	<section class="gradient-custom">
+		<div class="container py-5 h-100">
+			<div class="row justify-content-center align-items-center h-100">
+				<div class="col-12 col-lg-9 col-xl-7">
+					<div
+						class="card shadow-2-strong card-registration d-flex justify-content-center align-items-center"
+						style="border-radius: 15px;"
+					>
+						<h1>En construcción</h1>
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+</LayoutEstudiante>
+
+<script>
+	// Manejo del formulario
+	document.addEventListener("DOMContentLoaded", () => {
+		const form = document.getElementById("userForm");
+		const alertContainer = document.getElementById("alertContainer");
+
+		if (form) {
+			form.addEventListener("submit", async (e) => {
+				e.preventDefault();
+
+				try {
+					// Obtener todos los datos del formulario
+					const formData = {
+						correo: document.getElementById("correo").value,
+						nombre: document.getElementById("nombre").value,
+						apellidoPaterno:
+							document.getElementById("apellidoPaterno").value,
+						apellidoMaterno:
+							document.getElementById("apellidoMaterno").value,
+						codigoAlumno:
+							document.getElementById("codigoAlumno").value,
+						telefono: document.getElementById("telefono").value,
+						password: document.getElementById("password").value,
+					};
+
+					// Validar campos requeridos
+					for (const [key, value] of Object.entries(formData)) {
+						if (!value.trim()) {
+							mostrarAlerta(
+								"Por favor, complete todos los campos",
+								"danger",
+							);
+							return;
+						}
+					}
+
+					// Validar formato de correo electrónico
+					const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+					if (!emailRegex.test(formData.correo)) {
+						mostrarAlerta(
+							"Por favor, introduzca un correo electrónico válido",
+							"danger",
+						);
+						return;
+					}
+
+					// Enviar los datos al servidor utilizando fetch con FormData en lugar de JSON
+					const formDataObj = new FormData();
+					for (const [key, value] of Object.entries(formData)) {
+						formDataObj.append(key, value);
+					}
+
+					const response = await fetch(
+						"http://localhost:82/bolsaDeTrabajoApi/Controllers/estudianteController.php",
+						{
+							method: "POST",
+							body: formDataObj, // Enviamos como FormData en lugar de JSON
+						},
+					);
+
+					// Procesar la respuesta
+					if (response.ok) {
+						const data = await response.json();
+						mostrarAlerta(
+							"Registro completado con éxito",
+							"success",
+						);
+						form.reset();
+					} else {
+						const errorData = await response.json();
+						mostrarAlerta(
+							`Error en el registro: ${errorData.message || "Intente nuevamente más tarde"}`,
+							"danger",
+						);
+					}
+				} catch (error) {
+					console.error("Error al enviar el formulario:", error);
+					mostrarAlerta(
+						"Error al procesar la solicitud. Por favor, intente nuevamente más tarde",
+						"danger",
+					);
+				}
+			});
+		}
+
+		// Función para mostrar alertas
+		function mostrarAlerta(mensaje, tipo) {
+			const alertElement = document.createElement("div");
+			alertElement.className = `alert alert-${tipo} alert-dismissible fade show`;
+			alertElement.role = "alert";
+			alertElement.innerHTML = `
+		  ${mensaje}
+		  <button type="button" class="btn-close" data-mdb-dismiss="alert" aria-label="Close"></button>
+		`;
+
+			// Limpiar alertas anteriores
+			alertContainer.innerHTML = "";
+			alertContainer.appendChild(alertElement);
+
+			// Desaparecer automáticamente después de 5 segundos
+			setTimeout(() => {
+				if (alertElement && alertElement.parentNode) {
+					const alertToRemove = new bootstrap.Alert(alertElement);
+					alertToRemove.close();
+				}
+			}, 5000);
+		}
+	});
+</script>
