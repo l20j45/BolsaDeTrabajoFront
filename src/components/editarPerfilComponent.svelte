@@ -10,9 +10,10 @@
     submitError,
     handleSubmit,
     handleFileUpload,
+    fetchEnumData,
   } from "../utils/services";
   import type { Estudiante } from "../utils/interfaces/index";
-  import { apiUrl, photoUrl } from '../utils/data'; // Asegúrate de que la ruta sea correcta
+  import { photoUrl } from "../utils/data"; // Asegúrate de que la ruta sea correcta
 
   // ID del estudiante a cargar
   export let idEstudiante: number = 1005;
@@ -21,9 +22,15 @@
   let formData: Estudiante;
 
   // Variable para controlar mensajes de estado del envío
+  let carreraEnum: any;
+  let estatusEnum: any;
 
-  onMount(() => {
+  onMount(async () => {
     fetchEstudiante(idEstudiante);
+    carreraEnum = await fetchEnumData("carrera");
+    carreraEnum = carreraEnum.split(",").filter((item: string) => item !== "");
+    estatusEnum = await fetchEnumData("estatus");
+    estatusEnum = estatusEnum.split(",").filter((item: string) => item !== "");
   });
 
   // Inicializar formData cuando $estudiante cambie
@@ -44,6 +51,7 @@
   function handleInputChange(event: Event, field: keyof Estudiante) {
     const target = event.target as HTMLInputElement;
     formData = { ...formData, [field]: target.value };
+    
   }
 
   // Función para manejar la subida de archivos
@@ -57,7 +65,7 @@
     if (!file || !formData) return;
 
     const fileUrl = await handleFileUpload(file, field, formData.idEstudiante);
-    console.log("🚀 ~ fileUrl:", fileUrl)
+    console.log("🚀 ~ fileUrl:", fileUrl);
 
     if (fileUrl) {
       // Actualizar formData con la nueva URL
@@ -162,15 +170,21 @@
                           />
                         </div>
                         <div data-mdb-input-init="" class="form-outline">
-                          <label class="form-label" for="carrera">Carrera</label
+                          <label class="form-label" for="carrera">carrera</label
                           >
-                          <input
-                            type="text"
+                          
+                          <select
                             id="carrera"
-                            class="form-control form-control"
-                            value={formData?.carrera || ""}
-                            on:input={(e) => handleInputChange(e, "carrera")}
-                          />
+                            value={formData?.carrera}
+
+                            on:change={(e) => handleInputChange(e, "carrera")}
+                            class="form-select"
+                          >
+                            <option value="">No especificado</option>
+                            {#each carreraEnum as carrera}
+                              <option value={carrera}>{carrera}</option>
+                            {/each}
+                          </select>
                         </div>
                       </div>
                       <div class="col-md-6">
@@ -211,14 +225,21 @@
                           />
                         </div>
                         <div data-mdb-input-init="" class="form-outline">
-                          <label class="form-label" for="estado">Estatus</label>
-                          <input
-                            type="text"
-                            id="estado"
-                            class="form-control form-control"
-                            value={formData?.estado || ""}
-                            on:input={(e) => handleInputChange(e, "estado")}
-                          />
+                          <label class="form-label" for="carrera">carrera</label
+                            >
+                            
+                            <select
+                              id="carrera"
+                              value={formData?.estatus}
+  
+                              on:change={(e) => handleInputChange(e, "estatus")}
+                              class="form-select"
+                            >
+                              <option value="">No especificado</option>
+                              {#each estatusEnum as estatus}
+                                <option value={estatus}>{estatus}</option>
+                              {/each}
+                            </select>
                         </div>
                       </div>
                     </div>
@@ -226,9 +247,8 @@
                 </div>
                 <div class="col-lg-6">
                   <div class="about-avatar">
-                  
                     <img
-                      src={photoUrl+formData?.foto||
+                      src={photoUrl + formData?.foto ||
                         "https://bootdey.com/img/Content/avatar/avatar7.png"}
                       title="Foto de perfil"
                       alt="Foto de perfil"
@@ -263,7 +283,7 @@
                     {#if formData?.curriculum}
                       <small class="form-text text-muted">
                         Curriculum actual: <a
-                          href={photoUrl+formData?.curriculum}
+                          href={photoUrl + formData?.curriculum}
                           target="_blank">Ver curriculum</a
                         >
                       </small>

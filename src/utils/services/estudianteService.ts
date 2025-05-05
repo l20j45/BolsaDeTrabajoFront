@@ -39,6 +39,24 @@ export async function fetchEstudiante(id: number): Promise<Estudiante> {
 }
 
 /**
+ * Obtiene los datos de un estudiante por su ID
+ * @param id ID del estudiante
+ * @returns Promise con los datos del estudiante
+ */
+export async function fetchEnumData(enumColumn:string) {
+  try {
+    const response = await fetch(`${apiUrl}estudianteController.php?enum=${enumColumn}`);
+    if (!response.ok) throw new Error("Error al obtener datos");
+    let responseData = await response.json();
+    return responseData.data[0];
+
+  } catch (err) {
+    console.error("Error:", err);
+    throw err;
+  } 
+}
+
+/**
  * Obtiene los datos de un estudiante sin manipular los stores
  * Útil cuando quieres manejar los estados en el componente
  */
@@ -62,14 +80,15 @@ export async function handleSubmit(formData: Estudiante): Promise<Estudiante | n
   submitError.set(null);
 
   try {
-    const response = await fetch(`${apiUrl}Controllers/estudianteController.php`, {
+    const response = await fetch(`${apiUrl}estudianteController.php`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(formData)
     });
-
+    console.log('Response:', response);
+    console.log('Response:', response.ok);
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }

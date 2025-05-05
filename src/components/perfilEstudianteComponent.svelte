@@ -48,10 +48,11 @@
 									Perfil Basico
 								</h3>
 								<h6 class=" lead text-secondary">
-									{formData?.puestoDeseado ||
+									Puesto Deseado: {formData?.puestoDeseado ||
 										"Puesto Deseado"}
 								</h6>
 								<p>Descripcion.</p>
+								<p>{formData?.descripcion || "Aun no has puesto tu carrera"}</p>
 								<div class="row about-list">
 									<div class="col-md-6">
 										<div class="media d-flex flex-column">
@@ -69,9 +70,7 @@
 										<div class="media">
 											<span>Carreara</span>
 											<p>
-												{formData.carrera
-													? ""
-													: "Aun no has puesto tu carrera"}
+												{formData?.carrera || "Aun no has puesto tu carrera"}
 											</p>
 										</div>
 									</div>
@@ -106,9 +105,7 @@
 										<div class="media">
 											<span>Estatus</span>
 											<p>
-												{formData.carrera
-													? ""
-													: "Aun no has puesto tu estatus"}
+												{formData?.estatus || "Aun no has puesto tu carrera"}
 											</p>
 										</div>
 									</div>

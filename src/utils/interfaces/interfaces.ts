@@ -13,7 +13,7 @@ export interface Estudiante {
   telefono: string;
   correo: string;
   carrera?: string | null;
-  estado?: string | null;
+  estatus?: string | null;
   semestre?: string | null;
   foto?: string | null;
   curriculum?: string | null;
