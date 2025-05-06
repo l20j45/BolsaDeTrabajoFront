@@ -15,7 +15,7 @@
 	import { apiUrl, photoUrl } from "../utils/data"; // Asegúrate de que la ruta sea correcta
 
 	// ID del estudiante a cargar
-	export let idEstudiante: number = 1005;
+	export let idEstudiante: number = 1008;
 
 	// Variable para almacenar los datos del formulario
 	let formData: Estudiante;

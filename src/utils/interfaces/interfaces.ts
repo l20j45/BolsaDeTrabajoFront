@@ -20,3 +20,9 @@ export interface Estudiante {
   puestoDeseado?: string | null;
   descripcion?: string | null;
 }
+
+
+export interface Idioma {
+  value: number; 
+  label: string
+}

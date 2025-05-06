@@ -43,7 +43,7 @@ export async function fetchEstudiante(id: number): Promise<Estudiante> {
  * @param id ID del estudiante
  * @returns Promise con los datos del estudiante
  */
-export async function fetchEnumData(enumColumn:string) {
+export async function fetchEnumData(enumColumn: string) {
   try {
     const response = await fetch(`${apiUrl}estudianteController.php?enum=${enumColumn}`);
     if (!response.ok) throw new Error("Error al obtener datos");
@@ -53,7 +53,121 @@ export async function fetchEnumData(enumColumn:string) {
   } catch (err) {
     console.error("Error:", err);
     throw err;
-  } 
+  }
+}
+
+/**
+ * Obtiene los datos de un estudiante por su ID
+ * @param id ID del estudiante
+ * @returns Promise con los datos del estudiante
+ */
+export async function fetchTodosLosIdiomas() {
+  try {
+    const response = await fetch(`${apiUrl}idiomasController.php?idiomas=todos`);
+
+    if (response.status !== 200) throw new Error("Error al obtener datos");
+    let responseData = await response.json();
+    return responseData.data;
+
+  } catch (err) {
+    console.error("Error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Obtiene los datos de un estudiante por su ID
+ * @param id ID del estudiante
+ * @returns Promise con los datos del estudiante
+ */
+export async function fetchIdiomasUsuarios() {
+  try {
+    const response = await fetch(`${apiUrl}idiomasController.php?idEstudiante=1008`);
+
+    if (response.status !== 200) throw new Error("Error al obtener datos");
+    let responseData = await response.json();
+    return responseData.data;
+
+  } catch (err) {
+    console.error("Error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Obtiene los datos de un estudiante por su ID
+ * @param id ID del estudiante
+ * @returns Promise con los datos del estudiante
+ */
+export async function fetchTodasLasHabilidadesBlandas() {
+  try {
+    const response = await fetch(`${apiUrl}idiomasController.php?idiomas=todos`);
+
+    if (response.status !== 200) throw new Error("Error al obtener datos");
+    let responseData = await response.json();
+    return responseData.data;
+
+  } catch (err) {
+    console.error("Error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Obtiene los datos de un estudiante por su ID
+ * @param id ID del estudiante
+ * @returns Promise con los datos del estudiante
+ */
+export async function fetchIdiomasUsuarios() {
+  try {
+    const response = await fetch(`${apiUrl}idiomasController.php?idEstudiante=1008`);
+
+    if (response.status !== 200) throw new Error("Error al obtener datos");
+    let responseData = await response.json();
+    return responseData.data;
+
+  } catch (err) {
+    console.error("Error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Obtiene los datos de un estudiante por su ID
+ * @param id ID del estudiante
+ * @returns Promise con los datos del estudiante
+ */
+export async function fetchTodosLosIdiomas() {
+  try {
+    const response = await fetch(`${apiUrl}idiomasController.php?idiomas=todos`);
+
+    if (response.status !== 200) throw new Error("Error al obtener datos");
+    let responseData = await response.json();
+    return responseData.data;
+
+  } catch (err) {
+    console.error("Error:", err);
+    throw err;
+  }
+}
+
+/**
+ * Obtiene los datos de un estudiante por su ID
+ * @param id ID del estudiante
+ * @returns Promise con los datos del estudiante
+ */
+export async function fetchIdiomasUsuarios() {
+  try {
+    const response = await fetch(`${apiUrl}idiomasController.php?idEstudiante=1008`);
+
+    if (response.status !== 200) throw new Error("Error al obtener datos");
+    let responseData = await response.json();
+    return responseData.data;
+
+  } catch (err) {
+    console.error("Error:", err);
+    throw err;
+  }
 }
 
 /**
@@ -87,16 +201,11 @@ export async function handleSubmit(formData: Estudiante): Promise<Estudiante | n
       },
       body: JSON.stringify(formData)
     });
-    console.log('Response:', response);
-    console.log('Response:', response.ok);
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`);
     }
-
     const result: Estudiante = await response.json();
-    console.log('Estudiante actualizado:', result);
     submitSuccess.set(true);
-
     // Actualizar el store con los nuevos datos
     estudiante.set({ ...formData });
     return result;
@@ -113,7 +222,7 @@ export async function handleSubmit(formData: Estudiante): Promise<Estudiante | n
 // Método para manejar la subida de archivos
 export async function handleFileUpload(file: File, field: 'foto' | 'curriculum', estudianteId: number): Promise<string | null> {
   if (!file) return null;
-  
+
   submitting.set(true);
   submitError.set(null);
 
