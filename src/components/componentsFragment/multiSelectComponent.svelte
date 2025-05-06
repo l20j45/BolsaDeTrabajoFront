@@ -1,22 +1,26 @@
 <script>
-    import Select from 'svelte-select';
+    import Select from "svelte-select";
 
-    // Recibimos los items por props y hacemos que sea exportable para el bind
+    let filterText = "";
+    export let value = [
+        { value: 1, label: "name 1" },
+        { value: 2, label: "name 2" },
+    ];
+
     export let items;
-    let filterText = '';
-    let value = null;
 
-    function handleFilter(e) {        
-        if (value?.find(i => i.label === filterText)) return;
+    function handleFilter(e) {
+        if (value?.find((i) => i.label === filterText)) return;
         if (e.detail.length === 0 && filterText.length > 0) {
             const prev = items.filter((i) => !i.created);
-            // Actualizamos los items con el nuevo elemento
-            items = [...prev, { value: filterText, label: filterText, created: true }];
+            items = [
+                ...prev,
+                { value: filterText, label: filterText, created: true },
+            ];
         }
     }
-    
+
     function handleChange(e) {
-        // Actualizamos los items eliminando la propiedad created
         items = items.map((i) => {
             delete i.created;
             return i;
@@ -24,9 +28,26 @@
     }
 </script>
 
-<Select on:change={handleChange} multiple on:filter={handleFilter} bind:filterText bind:value {items}>
+<Select
+    class="design"
+    on:change={handleChange}
+    multiple
+    on:filter={handleFilter}
+    bind:filterText
+    bind:value
+    {items}
+>
     <div slot="item" let:item>
-        {item.created ? 'Add new: ' : ''}
+        {item.created ? "Add new: " : ""}
         {item.label}
     </div>
 </Select>
+
+<style>
+    :global(.design) {
+        background: rgb(255, 255, 255) !important; 
+        color: #000000 !important;
+        border: 1px solid #495057 !important;
+        
+    }
+</style>

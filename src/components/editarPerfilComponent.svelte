@@ -14,9 +14,10 @@
   } from "../utils/services";
   import type { Estudiante } from "../utils/interfaces/index";
   import { photoUrl } from "../utils/data"; // Asegúrate de que la ruta sea correcta
+  import MultiSelectComponent from "./componentsFragment/multiSelectComponent.svelte";
 
   // ID del estudiante a cargar
-  export let idEstudiante: number = 1005;
+  let idEstudiante: number = 1005;
 
   // Variable para almacenar los datos del formulario
   let formData: Estudiante;
@@ -25,18 +26,55 @@
   let carreraEnum: any;
   let estatusEnum: any;
 
+  let itemsDefaultSoftSkills = [
+    { value: 6, label: "name 6" },
+    { value: 7, label: "name 7" },
+    { value: 8, label: "name 8" },
+    { value: 9, label: "name 9" },
+    { value: 10, label: "name 10" },
+  ];
+  let datosInicialSoftSkills = $state(itemsDefaultSoftSkills);
+  let valoresDeRegresoSoftSkills: { value: number; label: string }[] = $state(
+    [],
+  );
+
+  let itemsDefaultHardSkill = [
+    { value: 6, label: "name 6" },
+    { value: 7, label: "name 7" },
+    { value: 8, label: "name 8" },
+    { value: 9, label: "name 9" },
+    { value: 10, label: "name 10" },
+  ];
+  let datosInicialHardSkills = $state(itemsDefaultHardSkill);
+  let valoresDeRegresoHardSkill: { value: number; label: string }[] = $state(
+    [],
+  );
+
+  let itemsDefaultIdiomas = [
+    { value: 6, label: "name 6" },
+    { value: 7, label: "name 7" },
+    { value: 8, label: "name 8" },
+    { value: 9, label: "name 9" },
+    { value: 10, label: "name 10" },
+  ];
+  let datosInicialIdiomas = $state(itemsDefaultIdiomas);
+  let valoresDeRegresoIdiomas: { value: number; label: string }[] = $state([]);
+
   onMount(async () => {
-    fetchEstudiante(idEstudiante);
     carreraEnum = await fetchEnumData("carrera");
     carreraEnum = carreraEnum.split(",").filter((item: string) => item !== "");
     estatusEnum = await fetchEnumData("estatus");
     estatusEnum = estatusEnum.split(",").filter((item: string) => item !== "");
-  });
 
-  // Inicializar formData cuando $estudiante cambie
-  $: if ($estudiante) {
-    formData = { ...$estudiante };
-  }
+    fetchEstudiante(idEstudiante);
+    estudiante.subscribe((valor) => {
+      if (valor) {
+        formData = { ...valor };
+      }
+    });
+
+    // No olvides cancelar la suscripción
+  });
 
   // Función para manejar el envío del formulario
   async function enviarFormulario(event: Event) {
@@ -51,7 +89,6 @@
   function handleInputChange(event: Event, field: keyof Estudiante) {
     const target = event.target as HTMLInputElement;
     formData = { ...formData, [field]: target.value };
-    
   }
 
   // Función para manejar la subida de archivos
@@ -172,11 +209,10 @@
                         <div data-mdb-input-init="" class="form-outline">
                           <label class="form-label" for="carrera">carrera</label
                           >
-                          
+
                           <select
                             id="carrera"
                             value={formData?.carrera}
-
                             on:change={(e) => handleInputChange(e, "carrera")}
                             class="form-select"
                           >
@@ -226,20 +262,19 @@
                         </div>
                         <div data-mdb-input-init="" class="form-outline">
                           <label class="form-label" for="carrera">carrera</label
-                            >
-                            
-                            <select
-                              id="carrera"
-                              value={formData?.estatus}
-  
-                              on:change={(e) => handleInputChange(e, "estatus")}
-                              class="form-select"
-                            >
-                              <option value="">No especificado</option>
-                              {#each estatusEnum as estatus}
-                                <option value={estatus}>{estatus}</option>
-                              {/each}
-                            </select>
+                          >
+
+                          <select
+                            id="carrera"
+                            value={formData?.estatus}
+                            on:change={(e) => handleInputChange(e, "estatus")}
+                            class="form-select"
+                          >
+                            <option value="">No especificado</option>
+                            {#each estatusEnum as estatus}
+                              <option value={estatus}>{estatus}</option>
+                            {/each}
+                          </select>
                         </div>
                       </div>
                     </div>
@@ -289,6 +324,36 @@
                       </small>
                     {/if}
                   </div>
+                </div>
+                <div class="w-100 d-flex flex-column">
+                  <p>SkillSoft</p>
+                  <MultiSelectComponent
+                    bind:items={datosInicialSoftSkills}
+                    bind:value={valoresDeRegresoSoftSkills}
+                  />
+                  valoresDeRegresoSoftSkills: {valoresDeRegresoSoftSkills
+                    ? valoresDeRegresoSoftSkills.map((i) => i?.label).join(", ")
+                    : "No value"}
+                </div>
+                <div class="w-100 d-flex flex-column">
+                  <p>HardSkills</p>
+                  <MultiSelectComponent
+                    bind:items={datosInicialHardSkills}
+                    bind:value={valoresDeRegresoHardSkill}
+                  />
+                  datosDeRegrvaloresDeRegresoHardSkilleso: {valoresDeRegresoHardSkill
+                    ? valoresDeRegresoHardSkill.map((i) => i?.label).join(", ")
+                    : "No value"}
+                </div>
+                <div class="w-100 d-flex flex-column">
+                  <p>Idiomas</p>
+                  <MultiSelectComponent
+                    bind:items={datosInicialIdiomas}
+                    bind:value={valoresDeRegresoIdiomas}
+                  />
+                  valoresDeRegresoIdiomas: {valoresDeRegresoIdiomas
+                    ? valoresDeRegresoIdiomas.map((i) => i?.label).join(", ")
+                    : "No value"}
                 </div>
                 <div class="w-100 d-flex justify-content-end">
                   <button
