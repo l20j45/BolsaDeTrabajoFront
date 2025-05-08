@@ -22,7 +22,17 @@ export interface Estudiante {
 }
 
 
-export interface Idioma {
+export interface idioma {
+  value: number; 
+  label: string
+}
+
+export interface habilidadesBlandas {
+  value: number; 
+  label: string
+}
+
+export interface habilidadesDuras {
   value: number; 
   label: string
 }

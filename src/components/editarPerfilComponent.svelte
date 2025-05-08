@@ -4,88 +4,134 @@
     estudiante,
     loading,
     error,
-    fetchEstudiante,
     submitting,
     submitSuccess,
     submitError,
-    handleSubmit,
-    handleFileUpload,
-    fetchEnumData,
-    fetchTodosLosIdiomas,
-
-    fetchIdiomasUsuarios
-
-  } from "../utils/services";
+  } from "../utils/Stores/storeEstudianteService";
+  import { EstudianteService } from "../utils/services/estudianteService";
   import type { Estudiante } from "../utils/interfaces/index";
   import { photoUrl } from "../utils/data"; // Asegúrate de que la ruta sea correcta
   import MultiSelectComponent from "./componentsFragment/multiSelectComponent.svelte";
-  import type { Idioma } from "../utils/interfaces/index";
+  import type {
+    idioma,
+    habilidadesBlandas,
+    habilidadesDuras,
+  } from "../utils/interfaces/index";
 
   // ID del estudiante a cargar
   let idEstudiante: number = 1008;
 
   // Variable para almacenar los datos del formulario
-  let formData: Estudiante;
+  let formData = $state<any>({});
 
   // Variable para controlar mensajes de estado del envío
-  let carreraEnum: any;
-  let estatusEnum: any;
-  
+  let carreraEnum = $state<any>([]);
+  let estatusEnum = $state<any>([]);
+  const estudianteService = new EstudianteService();
 
-  let itemsDefaultSoftSkills = [
-    { value: 6, label: "name 6" },
-    { value: 7, label: "name 7" },
-    { value: 8, label: "name 8" },
-    { value: 9, label: "name 9" },
-    { value: 10, label: "name 10" },
-  ];
-  let datosInicialSoftSkills = $state(itemsDefaultSoftSkills);
-  let valoresDeRegresoSoftSkills: { value: number; label: string }[] = $state(
-    [],
-  );
+  let datosInicialIdiomas = $state<idioma[]>([]);
+  let valoresDeRegresoIdiomas = $state<idioma[]>([]);
 
-  let itemsDefaultHardSkill = [
-    { value: 6, label: "name 6" },
-    { value: 7, label: "name 7" },
-    { value: 8, label: "name 8" },
-    { value: 9, label: "name 9" },
-    { value: 10, label: "name 10" },
-  ];
+  let datosInicialHabilidadesBlandas = $state<habilidadesBlandas[]>([]);
+  let valoresDeRegresoHabilidadesBlandas = $state<habilidadesBlandas[]>([]);
 
-  
-  let datosInicialHardSkills = $state(itemsDefaultHardSkill);
-  let valoresDeRegresoHardSkill: { value: number; label: string }[] = $state(
-    [],
-  );
-
-
-  let datosInicialIdiomas = $state<Idioma[]>([]);
-  let valoresDeRegresoIdiomas = $state<Idioma[]>([]);
+  let datosInicialHabilidadesDuras = $state<habilidadesDuras[]>([]);
+  let valoresDeRegresoHabilidadesDuras = $state<habilidadesDuras[]>([]);
 
   onMount(async () => {
-    carreraEnum = await fetchEnumData("carrera");
+    carreraEnum = await estudianteService.fetchEnumData("carrera");
     carreraEnum = carreraEnum.split(",").filter((item: string) => item !== "");
-    estatusEnum = await fetchEnumData("estatus");
+    estatusEnum = await estudianteService.fetchEnumData("estatus");
     estatusEnum = estatusEnum.split(",").filter((item: string) => item !== "");
-    
-    const todosLosIdiomas = await fetchTodosLosIdiomas().then((res) => {
-      return res.map((idioma: any) => {
-        return { value: idioma.idIdioma, label: idioma.NombresIdiomasAdicionales };
+
+    const todosLosIdiomas = await estudianteService
+      .fetchTodosLosIdiomas()
+      .then((res) => {
+        return res.map((idioma: any) => {
+          return {
+            value: idioma.idIdioma,
+            label: idioma.NombresIdiomasAdicionales,
+          };
+        });
       });
-    })
     datosInicialIdiomas.push(...todosLosIdiomas);
 
-    const idiomasUsuarios = await fetchIdiomasUsuarios().then((res) => {
-      return res.map((idioma: any) => {
-        return { value: idioma.idIdioma, label: idioma.NombresIdiomasAdicionales };
+    const idiomasUsuarios = await estudianteService
+      .fetchIdiomasUsuarios()
+      .then((res) => {
+        return (
+          res
+            .map((it: any) => {
+              return {
+                value: it.idIdioma,
+                label: it.NombresIdiomasAdicionales,
+              };
+            })
+            // Filtrar objetos que tienen value o label nulos
+            .filter((item: { value: any; label: any }) => item.value !== null && item.label !== null)
+        );
       });
-    })
     valoresDeRegresoIdiomas.push(...idiomasUsuarios);
-    
 
+    const todasLasHabilidadesBlandas = await estudianteService
+      .fetchTodasLasHabilidadesBlandas()
+      .then((res) => {
+        return res.map((it: any) => {
+          return {
+            value: it.IdHabilidadesBlandas,
+            label: it.NombresHabilidadesBlandas,
+          };
+        });
+      });
+    datosInicialHabilidadesBlandas.push(...todasLasHabilidadesBlandas);
 
-    
-    fetchEstudiante(idEstudiante);
+    const habilidadesUsuarios = await estudianteService
+      .fetchHabilidadesBlandasUsuarios()
+      .then((res) => {
+        return (
+          res
+            .map((it: any) => {
+              return {
+                value: it.IdHabilidadesBlandas,
+                label: it.NombresHabilidadesBlandas,
+              };
+            })
+            // Filtrar objetos que tienen value o label nulos
+            .filter((item: { value: any; label: any }) => item.value !== null && item.label !== null)
+        );
+      });
+
+      valoresDeRegresoHabilidadesBlandas.push(...habilidadesUsuarios);
+
+    const todasLasHabilidadesDuras = await estudianteService
+      .fetchTodosLosIdiomas()
+      .then((res) => {
+        return res.map((it: any) => {
+          return {
+            value: it.idHabilidadesDuras,
+            label: it.NombresHabilidadesDuras,
+          };
+        });
+      });
+    datosInicialHabilidadesDuras.push(...todasLasHabilidadesDuras);
+
+    const habilidadesDuras = await estudianteService
+      .fetchHabilidadesDurasUsuarios()
+      .then((res) => {
+        return (
+          res
+            .map((it: any) => {
+              return {
+                value: it.idHabilidadesDuras,
+                label: it.NombresHabilidadesDuras,
+              };
+            })
+            .filter((item: { value: any; label: any }) => item.value !== null && item.label !== null)
+        );
+      });
+    valoresDeRegresoHabilidadesDuras.push(...habilidadesDuras);
+
+    estudianteService.fetchEstudiante(idEstudiante);
     estudiante.subscribe((valor) => {
       if (valor) {
         formData = { ...valor };
@@ -95,16 +141,37 @@
     // No olvides cancelar la suscripción
   });
 
-
-
-
   // Función para manejar el envío del formulario
   async function enviarFormulario(event: Event) {
     event.preventDefault();
 
     if (formData) {
-      await handleSubmit(formData);
+      await estudianteService.handleSubmit(formData);
     }
+
+    const formIdiomas = {
+      idEstudiante: formData.idEstudiante,
+      valores: valoresDeRegresoIdiomas
+        ? valoresDeRegresoIdiomas.map((it) => it.label)
+        : [],
+    };
+
+    const formHabilidadesBlandas = {
+      idEstudiante: formData.idEstudiante,
+      valores: valoresDeRegresoHabilidadesBlandas
+        ? valoresDeRegresoHabilidadesBlandas.map((it) => it.label)
+        : [],
+    };
+
+    const formHabilidadesDuras = {
+      idEstudiante: formData.idEstudiante,
+      valores: valoresDeRegresoHabilidadesDuras
+        ? valoresDeRegresoHabilidadesDuras.map((it) => it.label)
+        : [],
+    };
+    estudianteService.enviarSelects(formIdiomas, 1);
+    estudianteService.enviarSelects(formHabilidadesBlandas, 2);
+    estudianteService.enviarSelects(formHabilidadesDuras, 3);
   }
 
   // Funciones para manejar cambios en los campos del formulario
@@ -123,7 +190,11 @@
 
     if (!file || !formData) return;
 
-    const fileUrl = await handleFileUpload(file, field, formData.idEstudiante);
+    const fileUrl = await estudianteService.handleFileUpload(
+      file,
+      field,
+      formData.idEstudiante,
+    );
     console.log("🚀 ~ fileUrl:", fileUrl);
 
     if (fileUrl) {
@@ -142,7 +213,7 @@
     <div class="container py-5">
       <div class="card p-3">
         <section class="section about-section gray-bg" id="about">
-          <form id="editUserForm" on:submit={enviarFormulario}>
+          <form id="editUserForm" onsubmit={enviarFormulario}>
             <div class="container">
               {#if $submitSuccess}
                 <div class="alert alert-success" role="alert">
@@ -170,8 +241,7 @@
                           id="puestoDeseado"
                           class="form-control form-control"
                           value={formData?.puestoDeseado || ""}
-                          on:input={(e) =>
-                            handleInputChange(e, "puestoDeseado")}
+                          oninput={(e) => handleInputChange(e, "puestoDeseado")}
                         />
                       </div>
 
@@ -185,7 +255,7 @@
                           id="descripcion"
                           rows="3"
                           value={formData?.descripcion || ""}
-                          on:input={(e) => handleInputChange(e, "descripcion")}
+                          oninput={(e) => handleInputChange(e, "descripcion")}
                         ></textarea>
                       </div>
                     </div>
@@ -213,7 +283,7 @@
                             id="correo"
                             class="form-control form-control"
                             value={formData?.correo || ""}
-                            on:input={(e) => handleInputChange(e, "correo")}
+                            oninput={(e) => handleInputChange(e, "correo")}
                           />
                         </div>
                         <div data-mdb-input-init="" class="form-outline">
@@ -225,7 +295,7 @@
                             id="telefono"
                             class="form-control form-control"
                             value={formData?.telefono || ""}
-                            on:input={(e) => handleInputChange(e, "telefono")}
+                            oninput={(e) => handleInputChange(e, "telefono")}
                           />
                         </div>
                         <div data-mdb-input-init="" class="form-outline">
@@ -235,7 +305,7 @@
                           <select
                             id="carrera"
                             value={formData?.carrera}
-                            on:change={(e) => handleInputChange(e, "carrera")}
+                            oninput={(e) => handleInputChange(e, "carrera")}
                             class="form-select"
                           >
                             <option value="">No especificado</option>
@@ -253,7 +323,7 @@
                             id="nombre"
                             class="form-control form-control"
                             value={formData?.nombre || ""}
-                            on:input={(e) => handleInputChange(e, "nombre")}
+                            oninput={(e) => handleInputChange(e, "nombre")}
                           />
                         </div>
                         <div data-mdb-input-init="" class="form-outline">
@@ -265,7 +335,7 @@
                             id="apellidoPaterno"
                             class="form-control form-control"
                             value={formData?.apellidoPaterno || ""}
-                            on:input={(e) =>
+                            oninput={(e) =>
                               handleInputChange(e, "apellidoPaterno")}
                           />
                         </div>
@@ -278,7 +348,7 @@
                             id="apellidoMaterno"
                             class="form-control form-control"
                             value={formData?.apellidoMaterno || ""}
-                            on:input={(e) =>
+                            oninput={(e) =>
                               handleInputChange(e, "apellidoMaterno")}
                           />
                         </div>
@@ -289,7 +359,7 @@
                           <select
                             id="carrera"
                             value={formData?.estatus}
-                            on:change={(e) => handleInputChange(e, "estatus")}
+                            oninput={(e) => handleInputChange(e, "estatus")}
                             class="form-select"
                           >
                             <option value="">No especificado</option>
@@ -322,7 +392,7 @@
                       name="foto"
                       id="fotoInput"
                       accept="image/*"
-                      on:change={(e) => handleFileUploadText(e, "foto")}
+                      oninput={(e) => handleFileUploadText(e, "foto")}
                     />
                   </div>
                   <div class="mb-3">
@@ -335,7 +405,7 @@
                       name="curriculum"
                       id="cvInput"
                       accept=".pdf,.doc,.docx"
-                      on:change={(e) => handleFileUploadText(e, "curriculum")}
+                      oninput={(e) => handleFileUploadText(e, "curriculum")}
                     />
                     {#if formData?.curriculum}
                       <small class="form-text text-muted">
@@ -350,22 +420,16 @@
                 <div class="w-100 d-flex flex-column">
                   <p>SkillSoft</p>
                   <MultiSelectComponent
-                    bind:items={datosInicialSoftSkills}
-                    bind:value={valoresDeRegresoSoftSkills}
+                    bind:items={datosInicialHabilidadesBlandas}
+                    bind:value={valoresDeRegresoHabilidadesBlandas}
                   />
-                  valoresDeRegresoSoftSkills: {valoresDeRegresoSoftSkills
-                    ? valoresDeRegresoSoftSkills.map((i) => i?.label).join(", ")
-                    : "No value"}
                 </div>
                 <div class="w-100 d-flex flex-column">
                   <p>HardSkills</p>
                   <MultiSelectComponent
-                    bind:items={datosInicialHardSkills}
-                    bind:value={valoresDeRegresoHardSkill}
+                    bind:items={datosInicialHabilidadesDuras}
+                    bind:value={valoresDeRegresoHabilidadesDuras}
                   />
-                  datosDeRegrvaloresDeRegresoHardSkilleso: {valoresDeRegresoHardSkill
-                    ? valoresDeRegresoHardSkill.map((i) => i?.label).join(", ")
-                    : "No value"}
                 </div>
                 <div class="w-100 d-flex flex-column">
                   <p>Idiomas</p>
