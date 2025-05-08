@@ -1,0 +1,22 @@
+<script>
+    // Función para verificar si el usuario está autenticado
+    function isAuthenticated() {
+      const token = localStorage.getItem('authToken');
+      return !!token; // Devuelve true si existe un token
+    }
+
+    function haveId() {
+      const idUsuario = localStorage.getItem('idUsuario');
+      return !!idUsuario; // Devuelve true si existe un token
+    }
+  
+    // Verificar autenticación al cargar el componente
+    document.addEventListener('DOMContentLoaded', () => {
+      if (!isAuthenticated()) {
+        // Redireccionar a la página de login si no está autenticado
+        window.location.href = '/iniciarSesion/iniciarSesion';
+      }
+    });
+  </script>
+  
+  <slot />

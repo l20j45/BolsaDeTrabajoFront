@@ -1,6 +1,6 @@
 
 // estudianteService.ts
-import { apiUrl } from '../data/index'; // Asegúrate de que la ruta sea correcta
+import { apiUrl } from '../data'; // Asegúrate de que la ruta sea correcta
 import type { Estudiante, EstudianteNormal } from '../interfaces'; // Asegúrate de que la ruta sea correcta
 import { estudiante, loading, error, submitting, submitSuccess, submitError } from '../Stores/storeEstudianteService';
 
@@ -76,7 +76,7 @@ export class EstudianteService {
    * @param id ID del estudiante
    * @returns Promise con los datos del estudiante
    */
-  async fetchIdiomasUsuarios() {
+  async fetchIdiomasUsuarios(id) {
     try {
       const response = await fetch(`${apiUrl}idiomasController.php?idEstudiante=1008`);
 
@@ -114,7 +114,7 @@ export class EstudianteService {
    * @param id ID del estudiante
    * @returns Promise con los datos del estudiante
    */
-  async fetchHabilidadesBlandasUsuarios() {
+  async fetchHabilidadesBlandasUsuarios(id) {
     try {
       const response = await fetch(`${apiUrl}HabilidadesBlandasController.php?idEstudiante=1008`);
 
@@ -128,11 +128,6 @@ export class EstudianteService {
     }
   }
 
-  /**
-   * Obtiene los datos de un estudiante por su ID
-   * @param id ID del estudiante
-   * @returns Promise con los datos del estudiante
-   */
   async fetchTodasLasHabilidadesDuras() {
     try {
       const response = await fetch(`${apiUrl}HabilidadesDurasController.php?habilidadesDuras=todas`);
@@ -152,13 +147,13 @@ export class EstudianteService {
    * @param id ID del estudiante
    * @returns Promise con los datos del estudiante
    */
-  async fetchHabilidadesDurasUsuarios() {
+  async fetchHabilidadesDurasUsuarios(id) {
     try {
       const response = await fetch(`${apiUrl}HabilidadesDurasController.php?idEstudiante=1008`);
 
       if (response.status !== 200) throw new Error("Error al obtener datos");
       let responseData = await response.json();
-      return responseData.data;
+      return responseData.data? responseData.data : [];
 
     } catch (err) {
       console.error("Error:", err);

@@ -128,7 +128,12 @@ import PrincipalImg from "../../assets/images/Principal.png";
 
 					// Procesar la respuesta
 					if (response.ok) {
-						window.location.replace("/perfil");
+						localStorage.setItem('loggeado', String(true));
+						const responseData = await response.json();
+						localStorage.setItem('authToken', String(responseData?.token));
+						localStorage.setItem('idUsuario', String(responseData.data[0]?.idEstudiante));
+
+						window.location.replace("/estudiante/perfil");
 					} else {
 						const errorData = await response.json();
 						mostrarAlerta(

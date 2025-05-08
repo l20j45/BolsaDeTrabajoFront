@@ -19,11 +19,12 @@
   } from "../utils/interfaces/index";
 
   // ID del estudiante a cargar
-  let idEstudiante: number = 1008;
+
 
   // Variable para almacenar los datos del formulario
   let formData = $state<any>({});
 
+  
   // Variable para controlar mensajes de estado del envío
   let carreraEnum = $state<any>([]);
   let estatusEnum = $state<any>([]);
@@ -39,6 +40,7 @@
   let valoresDeRegresoHabilidadesDuras = $state<habilidadesDuras[]>([]);
 
   onMount(async () => {
+    let idEstudiante= localStorage.getItem("idUsuario");
     carreraEnum = await estudianteService.fetchEnumData("carrera");
     carreraEnum = carreraEnum.split(",").filter((item: string) => item !== "");
     estatusEnum = await estudianteService.fetchEnumData("estatus");
@@ -50,7 +52,7 @@
         return res.map((idioma: any) => {
           return {
             value: idioma.idIdioma,
-            label: idioma.NombresIdiomasAdicionales,
+            label: idioma.nombresIdiomasAdicionales,
           };
         });
       });
@@ -64,11 +66,14 @@
             .map((it: any) => {
               return {
                 value: it.idIdioma,
-                label: it.NombresIdiomasAdicionales,
+                label: it.nombresIdiomasAdicionales,
               };
             })
             // Filtrar objetos que tienen value o label nulos
-            .filter((item: { value: any; label: any }) => item.value !== null && item.label !== null)
+            .filter(
+              (item: { value: any; label: any }) =>
+                item.value !== null && item.label !== null,
+            )
         );
       });
     valoresDeRegresoIdiomas.push(...idiomasUsuarios);
@@ -78,8 +83,8 @@
       .then((res) => {
         return res.map((it: any) => {
           return {
-            value: it.IdHabilidadesBlandas,
-            label: it.NombresHabilidadesBlandas,
+            value: it.idHabilidadesBlandas,
+            label: it.nombresHabilidadesBlandas,
           };
         });
       });
@@ -92,24 +97,27 @@
           res
             .map((it: any) => {
               return {
-                value: it.IdHabilidadesBlandas,
-                label: it.NombresHabilidadesBlandas,
+                value: it.idHabilidadesBlandas,
+                label: it.nombresHabilidadesBlandas,
               };
             })
             // Filtrar objetos que tienen value o label nulos
-            .filter((item: { value: any; label: any }) => item.value !== null && item.label !== null)
+            .filter(
+              (item: { value: any; label: any }) =>
+                item.value !== null && item.label !== null,
+            )
         );
       });
 
-      valoresDeRegresoHabilidadesBlandas.push(...habilidadesUsuarios);
+    valoresDeRegresoHabilidadesBlandas.push(...habilidadesUsuarios);
 
     const todasLasHabilidadesDuras = await estudianteService
-      .fetchTodosLosIdiomas()
+      .fetchTodasLasHabilidadesDuras()
       .then((res) => {
         return res.map((it: any) => {
           return {
             value: it.idHabilidadesDuras,
-            label: it.NombresHabilidadesDuras,
+            label: it.nombresHabilidadesDuras,
           };
         });
       });
@@ -123,15 +131,24 @@
             .map((it: any) => {
               return {
                 value: it.idHabilidadesDuras,
-                label: it.NombresHabilidadesDuras,
+                label: it.nombresHabilidadesDuras,
               };
             })
-            .filter((item: { value: any; label: any }) => item.value !== null && item.label !== null)
+            // Filtrar objetos que tienen value o label nulos
+            .filter(
+              (item: { value: any; label: any }) =>
+                item.value !== null && item.label !== null,
+            )
         );
       });
-    valoresDeRegresoHabilidadesDuras.push(...habilidadesDuras);
 
-    estudianteService.fetchEstudiante(idEstudiante);
+      valoresDeRegresoHabilidadesDuras.push(...habilidadesDuras);
+
+    if (idEstudiante) {
+      estudianteService.fetchEstudiante(Number(idEstudiante));
+    } else {
+      console.error("idEstudiante is null or invalid");
+    }
     estudiante.subscribe((valor) => {
       if (valor) {
         formData = { ...valor };
@@ -418,24 +435,28 @@
                   </div>
                 </div>
                 <div class="w-100 d-flex flex-column">
-                  <p>SkillSoft</p>
+                  <p>Idiomas</p>
+                  <MultiSelectComponent
+                    bind:items={datosInicialIdiomas}
+                    bind:value={valoresDeRegresoIdiomas}
+                  />
+                </div>
+
+                <div class="w-100 d-flex flex-column">
+                  <p>Habilidades Blandas</p>
                   <MultiSelectComponent
                     bind:items={datosInicialHabilidadesBlandas}
                     bind:value={valoresDeRegresoHabilidadesBlandas}
                   />
                 </div>
+
+
+
                 <div class="w-100 d-flex flex-column">
-                  <p>HardSkills</p>
+                  <p>Habilidades Duras</p>
                   <MultiSelectComponent
                     bind:items={datosInicialHabilidadesDuras}
                     bind:value={valoresDeRegresoHabilidadesDuras}
-                  />
-                </div>
-                <div class="w-100 d-flex flex-column">
-                  <p>Idiomas</p>
-                  <MultiSelectComponent
-                    bind:items={datosInicialIdiomas}
-                    bind:value={valoresDeRegresoIdiomas}
                   />
                 </div>
                 <div class="w-100 d-flex justify-content-end">
