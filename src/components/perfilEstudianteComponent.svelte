@@ -8,21 +8,22 @@
 	import { EstudianteService } from "../utils/services/estudianteService";
 	import type { Estudiante } from "../utils/interfaces/index";
 	import PerfilComponent from "./componentsFragment/perfilComponent.svelte";
-
+	let idEstudiante :any ;
 
 	let formData: Estudiante;
 	const estudianteService = new EstudianteService();
 
 	onMount(() => {
-		let idEstudiante= localStorage.getItem("idUsuario");
-		
-		estudianteService.fetchEstudiante(idEstudiante);
+		idEstudiante = localStorage.getItem("idUsuario");
+		if (idEstudiante) {
+			estudianteService.fetchEstudiante(Number(idEstudiante));
+		}
 	});
-
-	// Inicializar formData cuando $estudiante cambie
-	$: if ($estudiante) {
-		formData = { ...$estudiante };
-	}
+    estudiante.subscribe((valor) => {
+      if (valor) {
+        formData = { ...valor };
+      }
+    });
 </script>
 
 {#if $loading}

@@ -39,8 +39,10 @@
   let datosInicialHabilidadesDuras = $state<habilidadesDuras[]>([]);
   let valoresDeRegresoHabilidadesDuras = $state<habilidadesDuras[]>([]);
 
+  let idEstudiante :any ;
+
   onMount(async () => {
-    let idEstudiante= localStorage.getItem("idUsuario");
+    idEstudiante= localStorage.getItem("idUsuario");
     carreraEnum = await estudianteService.fetchEnumData("carrera");
     carreraEnum = carreraEnum.split(",").filter((item: string) => item !== "");
     estatusEnum = await estudianteService.fetchEnumData("estatus");
@@ -59,7 +61,7 @@
     datosInicialIdiomas.push(...todosLosIdiomas);
 
     const idiomasUsuarios = await estudianteService
-      .fetchIdiomasUsuarios()
+      .fetchIdiomasUsuarios(idEstudiante)
       .then((res) => {
         return (
           res
@@ -91,7 +93,7 @@
     datosInicialHabilidadesBlandas.push(...todasLasHabilidadesBlandas);
 
     const habilidadesUsuarios = await estudianteService
-      .fetchHabilidadesBlandasUsuarios()
+      .fetchHabilidadesBlandasUsuarios(idEstudiante)
       .then((res) => {
         return (
           res
@@ -124,7 +126,7 @@
     datosInicialHabilidadesDuras.push(...todasLasHabilidadesDuras);
 
     const habilidadesDuras = await estudianteService
-      .fetchHabilidadesDurasUsuarios()
+      .fetchHabilidadesDurasUsuarios(idEstudiante)
       .then((res) => {
         return (
           res

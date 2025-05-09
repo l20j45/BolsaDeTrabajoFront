@@ -1,7 +1,5 @@
 ---
 import Layout from "../../layouts/Layout.astro";
-import { Image } from "astro:assets";
-import PrincipalImg from "../../assets/images/Principal.png";
 ---
 
 <Layout>
@@ -97,8 +95,8 @@ import PrincipalImg from "../../assets/images/Principal.png";
 				try {
 					// Obtener todos los datos del formulario
 					const formData = {
-						correo: document.getElementById("correo") ?.value,
-						password: document.getElementById("password")?.value,
+						correo: (document.getElementById("correo") as HTMLInputElement)?.value,
+						password: (document.getElementById("password") as HTMLInputElement)?.value,
 					};
 
 					// Validar campos requeridos
@@ -162,8 +160,12 @@ import PrincipalImg from "../../assets/images/Principal.png";
 		`;
 
 			// Limpiar alertas anteriores
-			alertContainer.innerHTML = "";
-			alertContainer.appendChild(alertElement);
+			if (alertContainer) {
+				alertContainer.innerHTML = "";
+			}
+			if (alertContainer) {
+				alertContainer.appendChild(alertElement);
+			}
 
 			// Desaparecer automáticamente después de 5 segundos
 			setTimeout(() => {

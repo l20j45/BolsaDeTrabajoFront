@@ -1,9 +1,11 @@
 ---
 import LayoutEstudiante from "../../layouts/LayoutEstudiante.astro";
 import PerfilEstudiante from "../../components/perfilEstudianteComponent.svelte";
+import ProtectRoutes from "../../components/protectRoutes.astro";
 ---
 
-
-<LayoutEstudiante>
-	<PerfilEstudiante client:load/>
-</LayoutEstudiante>
+<ProtectRoutes>
+	<LayoutEstudiante>
+		<PerfilEstudiante client:load />
+	</LayoutEstudiante>
+</ProtectRoutes>

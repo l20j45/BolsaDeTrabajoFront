@@ -23,8 +23,10 @@
 	let valoresDeHabilidadesBlandas = $state<habilidadesBlandas[]>([]);
 	let valoresDeHabilidadesDuras = $state<habilidadesDuras[]>([]);
 
+	let idEstudiante:any;
+
 	onMount(async () => {
-		let idEstudiante= localStorage.getItem("idUsuario");
+		idEstudiante= localStorage.getItem("idUsuario");
 		const idiomasUsuarios = await estudianteService
 			.fetchIdiomasUsuarios(idEstudiante)
 			.then((res) => {

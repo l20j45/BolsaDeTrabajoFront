@@ -76,9 +76,9 @@ export class EstudianteService {
    * @param id ID del estudiante
    * @returns Promise con los datos del estudiante
    */
-  async fetchIdiomasUsuarios(id) {
+  async fetchIdiomasUsuarios(id:number) {
     try {
-      const response = await fetch(`${apiUrl}idiomasController.php?idEstudiante=1008`);
+      const response = await fetch(`${apiUrl}idiomasController.php?idEstudiante=${id}`);
 
       if (response.status !== 200) throw new Error("Error al obtener datos");
       let responseData = await response.json();
@@ -114,9 +114,9 @@ export class EstudianteService {
    * @param id ID del estudiante
    * @returns Promise con los datos del estudiante
    */
-  async fetchHabilidadesBlandasUsuarios(id) {
+  async fetchHabilidadesBlandasUsuarios(id:number) {
     try {
-      const response = await fetch(`${apiUrl}HabilidadesBlandasController.php?idEstudiante=1008`);
+      const response = await fetch(`${apiUrl}HabilidadesBlandasController.php?idEstudiante=${id}`);
 
       if (response.status !== 200) throw new Error("Error al obtener datos");
       let responseData = await response.json();
@@ -147,9 +147,9 @@ export class EstudianteService {
    * @param id ID del estudiante
    * @returns Promise con los datos del estudiante
    */
-  async fetchHabilidadesDurasUsuarios(id) {
+  async fetchHabilidadesDurasUsuarios(id:number) {
     try {
-      const response = await fetch(`${apiUrl}HabilidadesDurasController.php?idEstudiante=1008`);
+      const response = await fetch(`${apiUrl}HabilidadesDurasController.php?idEstudiante=${id}`);
 
       if (response.status !== 200) throw new Error("Error al obtener datos");
       let responseData = await response.json();
