@@ -1,0 +1,51 @@
+---
+import "../styles/bootstrap.scss";
+import NavBarPersonal from "../components/structure/navBarPersonalLoggeadoComponent.astro";
+import Footer from "../components/structure/footerComponent.astro";
+---
+
+<!doctype html>
+<html lang="en" data-bs-theme="dark">
+
+<head>
+  <meta charset="utf-8" />
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="generator" content={Astro.generator} />
+  <title>Bolsa de trabajo Cucea</title>
+  <meta name="description" content="Use Bootstrap with Astro" />
+</head>
+
+<body class="wrapperDasshboard bg-black">
+  <NavBarPersonal />
+  <div class="container-xxl contentDashboard">
+    <slot />
+  </div>
+  <Footer />
+
+
+</body>
+
+
+</html>
+<script>
+  import "bootstrap/dist/js/bootstrap";
+</script>
+<style>
+  body,
+  html {
+    height: 100%;
+    /* Para asegurar que ocupe todo el alto de la ventana */
+  }
+
+  .wrapperDasshboard {
+
+    display: flex;
+    background-color: #ffffff;
+    flex-direction: column;
+  }
+
+  .contentDashboard {
+    flex: 1;
+  }
+</style>

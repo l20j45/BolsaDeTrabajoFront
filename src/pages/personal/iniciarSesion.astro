@@ -1,5 +1,5 @@
 ---
-import Layout from "../../layouts/Layout.astro";
+import Layout from "../../layouts/LayoutPersonal.astro";
 ---
 
 <Layout>
@@ -16,7 +16,7 @@ import Layout from "../../layouts/Layout.astro";
 								class="mx-auto d-flex align-items-center justify-content-center"
 							>
 								<h3 class="mx-auto mb-4 pb-2 pb-md-0 mb-md-5">
-									Inicia Sesion Estudiante
+									Inicia Sesion Personal
 								</h3>
 							</div>
 							<div id="alertContainer"></div>
@@ -117,7 +117,7 @@ import Layout from "../../layouts/Layout.astro";
 					}
 					console.log("formDataObj", formDataObj);
 					const response = await fetch(
-						"http://localhost:82/bolsaDeTrabajoApi/Controllers/loginController.php",
+						"http://localhost:82/bolsaDeTrabajoApi/Controllers/loginPersonalController.php",
 						{
 							method: "POST",
 							body: formDataObj, // Enviamos como FormData en lugar de JSON
@@ -131,7 +131,7 @@ import Layout from "../../layouts/Layout.astro";
 						localStorage.setItem('authToken', String(responseData?.token));
 						localStorage.setItem('idUsuario', String(responseData.data[0]?.idEstudiante));
 
-						window.location.replace("/estudiante/perfil");
+						window.location.replace("/personal/");
 					} else {
 						const errorData = await response.json();
 						mostrarAlerta(
