@@ -127,12 +127,13 @@
                             <td>{row.apellidoMaterno}</td>
                             <td>{row.apellidoPaterno}</td>
                             <td>{row.nombre}</td>
-                            <td>{row.carrera}</td>
+                            <td>{row.carrera !== null ? row.carrera : "no registro nada"}</td>
                             <td>{row.correo}</td>
-                            <td>{row.puestoDeseado}</td>
-                            <td>{row.idiomas}</td>
-                            <td>{row.habilidadesDuras}</td>
-                            <td>{row.habilidadesBlandas}</td>
+                            <td>{row.puestoDeseado !==null ? row.puestoDeseado : "no registro esto"}</td>
+                            <td>{row.idiomas !==null ? row.Idiomas : "no hay idiomas"}</td>
+                            <td>{row.habilidadesDuras !==null ? row.habilidadesDuras : "no hay Habilidades para mostrar"}</td>
+                            <td>{row.habilidadesBlandas !==null ? row.habilidadesBlandas : "no hay Habilidades para mostrar"}</td>
+
                             <td>
                                 <button
                                     class="btn btn-info"
@@ -164,9 +165,9 @@
                     />
                 {:else}
                     <div
-                        style="width: 100px; height: 100px; border-radius: 50%; background-color: #ddd; display: flex; justify-content: center; align-items: center; font-size: 2em; color: #888;"
+                        class="d-flex justify-content-center align-items-center"
                     >
-                        <span>?</span>
+                        <span style="width: 100px; height: 100px; border-radius: 50%; background-color: #ddd; display: flex; justify-content: center; align-items: center; font-size: 2em; color: #888;">?</span>
                     </div>
                 {/if}
 
@@ -183,7 +184,7 @@
             <div class="student-info">
                 <div class="info-section">
                     <h4>Información General</h4>
-                    <p><strong>Carrera:</strong> {selectedStudent.carrera}</p>
+                    <p><strong>Carrera:</strong> {selectedStudent.carrera !== null ? selectedStudent.carrera : "Dato no ingresado"}</p>
                     <p>
                         <strong>Correo:</strong>
                         <a
@@ -201,7 +202,9 @@
 
                     <p>
                         <strong>Puesto Deseado:</strong>
-                        {selectedStudent.puestoDeseado}
+                        {selectedStudent.puestoDeseado !== null
+                            ? selectedStudent.puestoDeseado
+                            : "no hay puesto deseado para mostrar"}
                     </p>
                     <h4>Ver Curriculum</h4>
                     {#if selectedStudent.curriculum}
@@ -219,14 +222,15 @@
 
                 <div class="info-section">
                     <h4>Habilidades e Idiomas</h4>
-                    <p><strong>Idiomas:</strong> {selectedStudent.idiomas}</p>
+                    <p><strong>Idiomas:</strong> 
+                        {selectedStudent.idiomas  !== null ? selectedStudent.idiomas : "no hay idiomas para mostrar" }</p>
                     <p>
                         <strong>Habilidades Técnicas:</strong>
-                        {selectedStudent.habilidadesDuras}
+                        {selectedStudent.habilidadesDuras !== null ? selectedStudent.habilidadesDuras : "no hay habilidades para mostrar"}
                     </p>
                     <p>
                         <strong>Habilidades Blandas:</strong>
-                        {selectedStudent.habilidadesBlandas}
+                        {selectedStudent.habilidadesBlandas !== null ? selectedStudent.habilidadesBlandas : "no hay habilidades para mostrar"}
                     </p>
                 </div>
             </div>

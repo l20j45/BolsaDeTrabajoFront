@@ -31,7 +31,7 @@
 {:else if $error}
 	<p class="error">Error: {$error}</p>
 {:else if $estudiante}
-	<PerfilComponent {formData} />
+	<PerfilComponent {formData} title="Perfil Basico" />
 {:else if $estudiante === null}
 	<p>No se encontró el estudiante con ID {idEstudiante}</p>
 {:else}

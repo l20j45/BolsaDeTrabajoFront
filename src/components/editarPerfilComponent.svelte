@@ -372,7 +372,7 @@
                           />
                         </div>
                         <div data-mdb-input-init="" class="form-outline">
-                          <label class="form-label" for="carrera">carrera</label
+                          <label class="form-label" for="carrera">estatus</label
                           >
 
                           <select

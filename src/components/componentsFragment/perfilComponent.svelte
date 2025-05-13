@@ -1,5 +1,5 @@
 <script >
-   let { formData } = $props();
+   let { formData, title } = $props();
    import {photoUrl} from "../../utils/data";
 </script>
 
@@ -11,7 +11,7 @@
                     <div class="col-lg-6">
                         <div class="about-text go-to">
                             <h3 class="dark-color text-primary">
-                                Perfil Basico
+                                {title}
                             </h3>
                             <h6 class=" lead text-secondary">
                                 Puesto Deseado: {formData?.puestoDeseado ||

@@ -99,7 +99,7 @@
 {:else if $error}
 	<p class="error">Error: {$error}</p>
 {:else if $estudiante}
-	<PerfilComponent {formData}>
+	<PerfilComponent {formData} title="Perfil Extendido">
 		<ListaMultiSelectComponent items={valoresDeIdiomas} title="Idiomas" />
 		<ListaMultiSelectComponent items={valoresDeHabilidadesBlandas} title="Habilidades Blandas" />
 		<ListaMultiSelectComponent items={valoresDeHabilidadesDuras} title="Habilidades Duras" />
